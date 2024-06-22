@@ -208,4 +208,8 @@ df = pd.DataFrame(vehicle_data)
 
 # Save the DataFrame to a CSV file
 df.to_csv('used_vehicles.csv', index=False)
+
+# Save DataFrame to JSON file
+df.to_json('used_vehicles.json', orient='records', lines=True, force_ascii=False)
+
 print('Data has been scraped and saved to used_vehicles.csv')
