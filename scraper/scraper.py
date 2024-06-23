@@ -15,10 +15,12 @@ firstURL = 'https://www.arrabalesmotor.com/coches/todos-tipos/madrid/' # Define 
 pageNo = 1 # Page number
 curURL = baseURL # Current URL
 morePages = True # web pagination
-carNo = 1 # Vehicle number
+carNo = 0 # Vehicle number
 
 # Create a list to store vehicle details
 vehicle_data = []
+
+NO_INFO = "Sin información" # default str data value
 
 
 '''
@@ -98,9 +100,22 @@ while morePages:
         # Loop through each vehicle container and extract details
         for vehicle in vehicles:
 
-            carId = str(carNo)
+            # Initialize car data
             carNo += 1
+            carId = str(carNo)
             print(f'CAR {carId}') # {str(vehicle)}')
+            title = NO_INFO
+            version = NO_INFO
+            price_initial = NO_INFO
+            discount = NO_INFO
+            price_final = NO_INFO
+            car_date = NO_INFO
+            car_kms = NO_INFO
+            car_fuel = NO_INFO
+            consumption = NO_INFO
+            env_label = NO_INFO
+            image_url = ""
+            link = ""
 
             try:
                 title = vehicle.find('div', class_='vcard-main-info__make-model ws-skeleton').text.strip()
@@ -146,14 +161,24 @@ while morePages:
                 consumption = vehicle.find('span', class_='text text__default text__color--inherit text__font--primary').text.strip()
                 print("Consumo: " + consumption)
 
-                env_label_pic = vehicle.find('picture', class_='image media--ratio-unset environmental-icon').find('img')['src']
-                env_label = get_filename_from_url(env_label_pic)
-                print("Etiqueta: " + env_label)
+                if vehicle.find('picture', class_='image media--ratio-unset environmental-icon') is not None:
+                    env_label_pic = vehicle.find('picture', class_='image media--ratio-unset environmental-icon').find('img')['src']
+                    env_label = get_filename_from_url(env_label_pic)
+                    print("Etiqueta: " + env_label)
+                else:
+                    env_label = NO_INFO
+
 
                 image_url = vehicle.find('picture', class_='image media--ratio-4/3 vcard-header__element vcard-header__image ws-skeleton').find('img')['src']
                 print("Image: " + image_url)
+
+                if vehicle.find('a', class_='vcard--link') is not None:
+                    link = vehicle.find('a', class_='vcard--link')['href']
+                else:
+                    link = vehicle.find('a', class_='vcard-main-info__make-model ws-skeleton')['href']
             
-                link = vehicle.find('a', class_='vcard--link')['href']
+                # link = vehicle.find('a', class_='vcard--link')['href']
+                # link = vehicle.find('a', class_='vcard-main-info__make-model ws-skeleton')['href']
                 print(link)
             
                 # Add data to the list
